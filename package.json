@@ -1,0 +1,11 @@
+{
+  "name": "new-project",
+  "version": "1.0.0",
+  "description": "This is My New Demo Project",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Mr.Ushantha",
+  "license": "ISC"
+}
