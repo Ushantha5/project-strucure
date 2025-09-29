@@ -1,5 +1,5 @@
 // Basic server setup
-import express from "express";
+import express, { Router } from "express";
 
 const app = express();
 const PORT = 3000;
@@ -9,17 +9,10 @@ app.get("/", (req, res) => {
   res.send("Hello Express!");
 });
 
-app
-  .route("/book")
-  .get((req, res) => {
-    res.send("Get a random book");
-  })
-  .post((req, res) => {
-    res.send("Add a book");
-  })
-  .put((req, res) => {
-    res.send("Update the book");
-  });
+router.get("/user", (req, res) => {
+  res.send("This is GET user...");
+});
+app.user(router);
 
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
