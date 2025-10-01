@@ -1,25 +1,70 @@
-import express, { Router } from "express";
+import { readFileSync, writeFileSync } from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 
-const router = express.Router();
+// Get __dirname equivalent
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-router.get("/", (req, res) => {
-  res.send("This is GET User...");
-});
+// Path to data file
+const filePath = path.join(__dirname, "../data/users.json");
 
-router.get("/:id", (req, res) => {
-  res.send("This is GET one User...");
-});
+// Helper: Read users from file
+function readUsers() {
+  const data = readFileSync(filePath, "utf8");
+  return JSON.parse(data);
+}
 
-router.post("/", (req, res) => {
-  res.send("This is Create User...");
-});
+// Helper: Write users to file
+function writeUsers(users) {
+  writeFileSync(filePath, JSON.stringify(users, null, 2));
+}
 
-router.put("/:id", (req, res) => {
-  res.send("This is put one User...");
-});
+export const getUsers = (req, res) => {
+  const users = readUsers();
+  res.json(users);
+};
 
-router.delete("/:id", (req, res) => {
-  res.send("This is DELETE User...");
-});
+export const getOneUser = (req, res) => {
+  res.send("Get One user by ID");
+};
 
-export default router;
+export const createUser = (req, res) => {
+  try {
+    const { name, email } = req.body;
+
+    // Validate required fields
+    if (!name || !email) {
+      return res.status(400).json({ error: "Name and email are required" });
+    }
+
+    const users = readUsers();
+
+    // Create new user
+    const newUser = {
+      id: users.length > 0 ? Math.max(...users.map((u) => u.id)) + 1 : 1,
+      name,
+      email,
+    };
+
+    // Add to users array
+    users.push(newUser);
+
+    // Write to file
+    writeUsers(users);
+
+    res.status(201).json(newUser);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to create user" });
+  }
+};
+
+export const updateUser = (req, res) => {
+  res.send("Update a user by ID");
+};
+
+export const deleteUser = (req, res) => {
+  res.send("Delete a user by ID");
+};
+
+// export { getUsers, getOneUser, createUser, updateUser, deleteUser }
